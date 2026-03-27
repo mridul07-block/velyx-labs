@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import GlowOrb from '../components/GlowOrb'
@@ -7,6 +7,92 @@ import CTAButton from '../components/CTAButton'
 import MarqueeStrip from '../components/MarqueeStrip'
 import ScrollReveal from '../components/ScrollReveal'
 import TextReveal from '../components/TextReveal'
+
+/* ─── Starfield canvas ──────────────────────────────────── */
+function Starfield() {
+  const canvasRef = useRef(null)
+  const starsRef = useRef([])
+  const rafRef = useRef(null)
+
+  const initStars = useCallback((w, h) => {
+    const stars = []
+    for (let i = 0; i < 220; i++) {
+      stars.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.4 + 0.3,
+        baseAlpha: Math.random() * 0.6 + 0.2,
+        speed: Math.random() * 0.0015 + 0.0005,
+        offset: Math.random() * Math.PI * 2,
+      })
+    }
+    starsRef.current = stars
+  }, [])
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    let w = (canvas.width = canvas.offsetWidth * devicePixelRatio)
+    let h = (canvas.height = canvas.offsetHeight * devicePixelRatio)
+    ctx.scale(devicePixelRatio, devicePixelRatio)
+    initStars(w / devicePixelRatio, h / devicePixelRatio)
+
+    const draw = (t) => {
+      ctx.clearRect(0, 0, w, h)
+      for (const s of starsRef.current) {
+        const alpha = s.baseAlpha + Math.sin(t * s.speed + s.offset) * 0.35
+        ctx.beginPath()
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(200,195,255,${Math.max(0.05, alpha)})`
+        ctx.fill()
+      }
+      rafRef.current = requestAnimationFrame(draw)
+    }
+    rafRef.current = requestAnimationFrame(draw)
+
+    const onResize = () => {
+      w = canvas.width = canvas.offsetWidth * devicePixelRatio
+      h = canvas.height = canvas.offsetHeight * devicePixelRatio
+      ctx.scale(devicePixelRatio, devicePixelRatio)
+      initStars(w / devicePixelRatio, h / devicePixelRatio)
+    }
+    window.addEventListener('resize', onResize)
+
+    return () => {
+      cancelAnimationFrame(rafRef.current)
+      window.removeEventListener('resize', onResize)
+    }
+  }, [initStars])
+
+  return <canvas ref={canvasRef} className="hero-starfield" />
+}
+
+/* ─── Mini chart SVG for dashboard cards ────────────────── */
+function MiniChart({ color = '#7F77DD' }) {
+  return (
+    <svg viewBox="0 0 80 30" fill="none" className="w-20 h-8 mt-1">
+      <polyline
+        points="0,25 10,22 20,18 30,20 40,12 50,15 60,8 70,10 80,4"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <defs>
+        <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.3" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M0,25 L10,22 L20,18 L30,20 L40,12 L50,15 L60,8 L70,10 L80,4 L80,30 L0,30 Z"
+        fill="url(#chartGrad)"
+      />
+    </svg>
+  )
+}
 
 /* ─── Animated counter hook ─────────────────────────────── */
 function useCounter(target, duration = 2200) {
@@ -57,115 +143,135 @@ export default function Home() {
   return (
     <div className="page-wrapper">
       {/* ══ SECTION 1 — HERO ══════════════════════════════════ */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
-        {/* Background layers */}
-        <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse 80% 60% at 60% 40%, rgba(127,119,221,0.08) 0%, transparent 70%)',
+      <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+        {/* Starfield background */}
+        <Starfield />
+
+        {/* Radial atmospheric glow */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: 'radial-gradient(ellipse 70% 50% at 50% 60%, rgba(127,119,221,0.10) 0%, transparent 70%)',
         }} />
 
-        {/* Orb */}
-        <GlowOrb
-          size={720}
-          className="right-[-120px] top-[50%]"
-          style={{ transform: 'translateY(-50%)' }}
-        />
+        {/* Glowing planet */}
+        <div className="hero-planet" aria-hidden="true" />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 pt-28 pb-20 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        {/* ── Center content ── */}
+        <div className="relative z-10 max-w-4xl mx-auto px-6 pt-32 pb-60 text-center w-full">
+          {/* Badge pill */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="mb-7 flex justify-center"
+          >
+            <span className="hero-badge">Velyx Labs · AI Automation Agency</span>
+          </motion.div>
 
-            {/* Left — copy */}
-            <div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-              >
-                <span className="eyebrow">Velyx Labs · AI Automation Agency</span>
-              </motion.div>
+          {/* Heading */}
+          <h1
+            className="font-display mb-6 leading-[1.05] tracking-[-0.03em]"
+            style={{ fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)', fontWeight: 700 }}
+          >
+            <span className="text-white block">
+              <TextReveal text="We Build AI Systems" delay={0.2} />
+            </span>
+            <span className="text-gradient block">
+              <TextReveal text="That Scale Founders." delay={0.35} />
+            </span>
+          </h1>
 
-              <h1
-                className="font-display mt-4 mb-6 leading-[1.05] tracking-[-0.03em]"
-                style={{ fontSize: 'clamp(2.6rem, 5.5vw, 4.2rem)', fontWeight: 700 }}
-              >
-                <span className="text-white block">
-                  <TextReveal text="We Build AI Systems" delay={0.2} />
-                </span>
-                <span className="text-stroke block">
-                  <TextReveal text="That Scale Founders." delay={0.35} />
-                </span>
-              </h1>
+          {/* Subtitle */}
+          <motion.p
+            className="text-text-sub text-lg leading-relaxed max-w-xl mx-auto mb-10"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
+            From workflow automation to full AI strategy — we engineer the intelligence
+            that turns startups into category leaders.
+          </motion.p>
 
-              <motion.p
-                className="text-text-sub text-lg leading-relaxed max-w-lg mb-10"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.6 }}
-              >
-                From workflow automation to full AI strategy — we engineer the intelligence
-                that turns startups into category leaders.
-              </motion.p>
+          {/* CTA buttons */}
+          <motion.div
+            className="flex flex-wrap justify-center gap-4 mb-16"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.72 }}
+          >
+            <CTAButton variant="primary" to="/contact" size="lg">
+              Start Scaling
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </CTAButton>
+            <CTAButton variant="secondary" to="/portfolio" size="lg">
+              See Our Work
+            </CTAButton>
+          </motion.div>
 
-              <motion.div
-                className="flex flex-wrap gap-4"
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.72 }}
-              >
-                <CTAButton variant="primary" to="/contact" size="lg">
-                  Start Scaling
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </CTAButton>
-                <CTAButton variant="secondary" to="/portfolio" size="lg">
-                  See Our Work
-                </CTAButton>
-              </motion.div>
-
-              {/* Scroll indicator */}
-              <motion.div
-                className="mt-16 flex items-center gap-3"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.1 }}
-              >
-                <div className="scroll-bounce w-6 h-9 rounded-full border border-white/20 flex items-start justify-center pt-2">
-                  <div className="w-1 h-1.5 rounded-full bg-velyx-400" />
-                </div>
-                <span className="font-mono text-xs text-white/30 tracking-widest uppercase">Scroll</span>
-              </motion.div>
+          {/* Scroll indicator */}
+          <motion.div
+            className="flex flex-col items-center gap-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.1 }}
+          >
+            <div className="scroll-bounce w-6 h-9 rounded-full border border-white/20 flex items-start justify-center pt-2">
+              <div className="w-1 h-1.5 rounded-full bg-velyx-400" />
             </div>
+            <span className="font-mono text-[10px] text-white/30 tracking-[0.25em] uppercase">Scroll Down</span>
+          </motion.div>
+        </div>
 
-            {/* Right — floating metric cards */}
-            <div className="relative flex flex-col items-end gap-5 lg:pr-8">
-              {[
-                { label: 'Automations Built', value: '47', icon: '⚡', delay: 0 },
-                { label: 'Time Saved', value: '2,400 hrs/mo', icon: '⏱', delay: 0.15 },
-                { label: 'Founders Scaled', value: '30+', icon: '🚀', delay: 0.3 },
-              ].map(({ label, value, icon, delay }, i) => (
-                <motion.div
-                  key={label}
-                  initial={{ opacity: 0, x: 30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.7, delay: 0.5 + delay }}
-                  className={['float-a', 'float-b', 'float-c'][i]}
-                  style={{ alignSelf: ['flex-end', 'flex-start', 'flex-end'][i] }}
-                >
-                  <GlassCard className="px-6 py-5 min-w-[200px]" hover={false}>
-                    <div className="flex items-center gap-3 mb-1">
-                      <span className="text-lg">{icon}</span>
-                      <span className="font-mono text-xs text-white/40 tracking-wider uppercase">{label}</span>
-                    </div>
-                    <div className="font-display text-3xl font-bold text-white">
-                      {value}
-                    </div>
-                    <div className="mt-2 h-0.5 rounded-full bg-gradient-to-r from-velyx-500 to-transparent" />
-                  </GlassCard>
-                </motion.div>
+        {/* ── Floating dashboard cards ── */}
+        <motion.div
+          className="hero-card-left"
+          initial={{ opacity: 0, x: -40, y: 20 }}
+          animate={{ opacity: 1, x: 0, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.9 }}
+        >
+          <GlassCard className="px-5 py-4 min-w-[200px]" hover={false}>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.5)]" />
+              <span className="font-mono text-[10px] text-white/40 tracking-wider uppercase">Revenue</span>
+            </div>
+            <div className="font-display text-2xl font-bold text-white">$31,740</div>
+            <MiniChart color="#7F77DD" />
+            <div className="mt-1 flex items-center gap-1">
+              <span className="text-green-400 text-xs font-mono">+12.4%</span>
+              <span className="text-white/30 text-[10px] font-mono">vs last month</span>
+            </div>
+          </GlassCard>
+        </motion.div>
+
+        <motion.div
+          className="hero-card-right"
+          initial={{ opacity: 0, x: 40, y: 20 }}
+          animate={{ opacity: 1, x: 0, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.05 }}
+        >
+          <GlassCard className="px-5 py-4 min-w-[190px]" hover={false}>
+            <div className="flex items-center justify-between mb-1">
+              <span className="font-mono text-[10px] text-white/40 tracking-wider uppercase">Automations</span>
+              <span className="text-velyx-400 text-xs font-mono">42 Active</span>
+            </div>
+            <div className="flex items-end gap-1 mt-2">
+              {[40, 55, 35, 65, 50, 75, 60, 80, 70, 90].map((h, i) => (
+                <div
+                  key={i}
+                  className="w-2 rounded-sm"
+                  style={{
+                    height: `${h * 0.35}px`,
+                    background: `rgba(127,119,221,${0.3 + (i / 10) * 0.5})`,
+                  }}
+                />
               ))}
             </div>
-          </div>
-        </div>
+            <div className="mt-2 flex items-center gap-1">
+              <span className="text-velyx-300 text-xs font-mono">+8 this week</span>
+            </div>
+          </GlassCard>
+        </motion.div>
       </section>
 
       {/* ══ SECTION 2 — MARQUEE ══════════════════════════════ */}
