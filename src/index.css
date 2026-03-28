@@ -3,7 +3,9 @@
 @tailwind utilities;
 
 /* ── Global resets ───────────────────────────────────────── */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -22,7 +24,10 @@ body {
 
 /* ── Custom cursor (mouse/trackpad only) ─────────────────── */
 @media (pointer: fine) {
-  *, *::before, *::after {
+
+  *,
+  *::before,
+  *::after {
     cursor: none !important;
   }
 }
@@ -37,13 +42,16 @@ body {
 ::-webkit-scrollbar {
   width: 5px;
 }
+
 ::-webkit-scrollbar-track {
   background: #0a0a0a;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #7F77DD44;
   border-radius: 99px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #7F77DD88;
 }
@@ -61,10 +69,10 @@ body {
 
 /* ── Glass card base ─────────────────────────────────────── */
 .glass {
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(127,119,221,0.2);
+  border: 1px solid rgba(162, 89, 255, 0.2);
 }
 
 .glass-hover {
@@ -72,13 +80,13 @@ body {
 }
 
 .glass-hover:hover {
-  border-color: rgba(127,119,221,0.45);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 30px rgba(127,119,221,0.2);
+  border-color: rgba(162, 89, 255, 0.45);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 30px rgba(162, 89, 255, 0.2);
 }
 
 /* ── Stroke text (hero second line) ─────────────────────── */
 .text-stroke {
-  -webkit-text-stroke: 1.5px rgba(127,119,221,0.6);
+  -webkit-text-stroke: 1.5px rgba(162, 89, 255, 0.6);
   color: transparent;
 }
 
@@ -92,21 +100,21 @@ body {
 
 /* ── Violet glow text ────────────────────────────────────── */
 .text-glow {
-  text-shadow: 0 0 30px rgba(127,119,221,0.6);
+  text-shadow: 0 0 30px rgba(162, 89, 255, 0.6);
 }
 
 /* ── Section divider ─────────────────────────────────────── */
 .section-divider {
   width: 100%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(127,119,221,0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(162, 89, 255, 0.3), transparent);
 }
 
 /* ── Animated grid overlay ───────────────────────────────── */
 .grid-overlay {
   background-image:
-    linear-gradient(rgba(127,119,221,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(127,119,221,0.04) 1px, transparent 1px);
+    linear-gradient(rgba(162, 89, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(162, 89, 255, 0.04) 1px, transparent 1px);
   background-size: 60px 60px;
 }
 
@@ -116,8 +124,9 @@ body {
 }
 
 /* ── Custom button focus ─────────────────────────────────── */
-button:focus-visible, a:focus-visible {
-  outline: 2px solid rgba(127,119,221,0.7);
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid rgba(162, 89, 255, 0.7);
   outline-offset: 3px;
   border-radius: 6px;
 }
@@ -143,35 +152,88 @@ button:focus-visible, a:focus-visible {
 
 /* ── Floating animation for hero metric cards ────────────── */
 @keyframes floatA {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-14px); }
-}
-@keyframes floatB {
-  0%, 100% { transform: translateY(-8px); }
-  50% { transform: translateY(8px); }
-}
-@keyframes floatC {
-  0%, 100% { transform: translateY(-4px); }
-  50% { transform: translateY(-18px); }
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-14px);
+  }
 }
 
-.float-a { animation: floatA 5.5s ease-in-out infinite; }
-.float-b { animation: floatB 7s ease-in-out infinite; }
-.float-c { animation: floatC 6s ease-in-out infinite; }
+@keyframes floatB {
+
+  0%,
+  100% {
+    transform: translateY(-8px);
+  }
+
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@keyframes floatC {
+
+  0%,
+  100% {
+    transform: translateY(-4px);
+  }
+
+  50% {
+    transform: translateY(-18px);
+  }
+}
+
+.float-a {
+  animation: floatA 5.5s ease-in-out infinite;
+}
+
+.float-b {
+  animation: floatB 7s ease-in-out infinite;
+}
+
+.float-c {
+  animation: floatC 6s ease-in-out infinite;
+}
 
 /* ── Scroll indicator bounce ─────────────────────────────── */
 @keyframes scrollBounce {
-  0%, 100% { transform: translateY(0); opacity: 0.6; }
-  50% { transform: translateY(8px); opacity: 1; }
+
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: translateY(8px);
+    opacity: 1;
+  }
 }
-.scroll-bounce { animation: scrollBounce 2s ease-in-out infinite; }
+
+.scroll-bounce {
+  animation: scrollBounce 2s ease-in-out infinite;
+}
 
 /* ── Counter up animation ────────────────────────────────── */
 @keyframes countUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-.count-up { animation: countUp 0.6s ease-out forwards; }
+
+.count-up {
+  animation: countUp 0.6s ease-out forwards;
+}
 
 /* ── Hero starfield canvas ───────────────────────────────── */
 .hero-starfield {
@@ -180,27 +242,45 @@ button:focus-visible, a:focus-visible {
   z-index: 0;
 }
 
-/* ── Hero planet / sphere ────────────────────────────────── */
+/* ── Hero spotlight ray ──────────────────────────────────── */
+.hero-spotlight {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1200px;
+  height: 60vh;
+  background: conic-gradient(from 180deg at 50% -20%,
+      transparent 120deg,
+      rgba(162, 89, 255, 0.15) 150deg,
+      rgba(162, 89, 255, 0.25) 180deg,
+      rgba(162, 89, 255, 0.15) 210deg,
+      transparent 240deg);
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Hero planet / eclipse sphere ────────────────────────── */
 .hero-planet {
   position: absolute;
   left: 50%;
-  bottom: -30%;
+  bottom: -45%;
   transform: translateX(-50%);
-  width: 900px;
-  height: 900px;
+  width: 1200px;
+  height: 1200px;
   border-radius: 50%;
-  background:
-    radial-gradient(circle at 50% 30%,
-      rgba(127,119,221,0.35) 0%,
-      rgba(90,75,180,0.2) 30%,
-      rgba(40,30,100,0.15) 55%,
-      rgba(10,10,10,0) 75%
-    );
+  /* Dark sphere to create silhouette */
+  background: radial-gradient(circle at 50% 10%, #050505 40%, #020202 80%);
+  /* Strong top rim light */
   box-shadow:
-    0 0 120px 40px rgba(127,119,221,0.18),
-    0 0 250px 80px rgba(127,119,221,0.08),
-    inset 0 -80px 120px -40px rgba(127,119,221,0.25);
-  animation: planetPulse 6s ease-in-out infinite;
+    inset 0 4px 20px rgba(162, 89, 255, 0.6),
+    inset 0 10px 40px rgba(162, 89, 255, 0.2),
+    0 -30px 100px rgba(162, 89, 255, 0.4),
+    0 -80px 200px rgba(162, 89, 255, 0.15);
+  animation: planetPulse 8s ease-in-out infinite;
+  z-index: 2;
 }
 
 .hero-planet::before {
@@ -208,34 +288,39 @@ button:focus-visible, a:focus-visible {
   position: absolute;
   inset: -2px;
   border-radius: 50%;
-  background: linear-gradient(180deg,
-    rgba(155,148,232,0.3) 0%,
-    transparent 40%
-  );
-  mask: linear-gradient(180deg, white 0%, transparent 50%);
-  -webkit-mask: linear-gradient(180deg, white 0%, transparent 50%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(162, 89, 255, 0.8) 10%, transparent 40%);
+  mask: linear-gradient(180deg, white 0%, transparent 20%);
+  -webkit-mask: linear-gradient(180deg, white 0%, transparent 20%);
 }
 
 .hero-planet::after {
   content: '';
   position: absolute;
-  top: -20px;
+  top: -10px;
   left: 50%;
   transform: translateX(-50%);
-  width: 110%;
-  height: 60px;
+  width: 80%;
+  height: 80px;
   background: radial-gradient(ellipse at center,
-    rgba(127,119,221,0.5) 0%,
-    rgba(127,119,221,0.15) 40%,
-    transparent 70%
-  );
-  filter: blur(10px);
+      rgba(162, 89, 255, 0.9) 0%,
+      rgba(162, 89, 255, 0.4) 30%,
+      transparent 70%);
+  filter: blur(16px);
   border-radius: 50%;
 }
 
 @keyframes planetPulse {
-  0%, 100% { opacity: 0.85; transform: translateX(-50%) scale(1); }
-  50% { opacity: 1; transform: translateX(-50%) scale(1.03); }
+
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+    box-shadow: inset 0 4px 20px rgba(162, 89, 255, 0.6), inset 0 10px 40px rgba(162, 89, 255, 0.2), 0 -30px 100px rgba(162, 89, 255, 0.4), 0 -80px 200px rgba(162, 89, 255, 0.15);
+  }
+
+  50% {
+    transform: translateX(-50%) scale(1.02);
+    box-shadow: inset 0 6px 25px rgba(162, 89, 255, 0.8), inset 0 15px 50px rgba(162, 89, 255, 0.3), 0 -40px 120px rgba(162, 89, 255, 0.5), 0 -100px 220px rgba(162, 89, 255, 0.2);
+  }
 }
 
 /* ── Hero badge pill ─────────────────────────────────────── */
@@ -245,8 +330,8 @@ button:focus-visible, a:focus-visible {
   gap: 8px;
   padding: 7px 20px;
   border-radius: 50px;
-  border: 1px solid rgba(127,119,221,0.3);
-  background: rgba(127,119,221,0.08);
+  border: 1px solid rgba(162, 89, 255, 0.3);
+  background: rgba(162, 89, 255, 0.08);
   font-family: 'Space Mono', monospace;
   font-size: 0.7rem;
   letter-spacing: 0.12em;
@@ -262,7 +347,7 @@ button:focus-visible, a:focus-visible {
   height: 6px;
   border-radius: 50%;
   background: #7F77DD;
-  box-shadow: 0 0 8px rgba(127,119,221,0.6);
+  box-shadow: 0 0 8px rgba(162, 89, 255, 0.6);
 }
 
 /* ── Floating hero dashboard cards ───────────────────────── */
@@ -281,10 +366,12 @@ button:focus-visible, a:focus-visible {
 }
 
 @media (max-width: 1024px) {
+
   .hero-card-left,
   .hero-card-right {
     display: none;
   }
+
   .hero-planet {
     width: 600px;
     height: 600px;
@@ -302,6 +389,13 @@ button:focus-visible, a:focus-visible {
 
 /* ── Star twinkle ────────────────────────────────────────── */
 @keyframes twinkle {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 1;
+  }
 }

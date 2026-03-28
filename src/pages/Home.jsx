@@ -152,8 +152,11 @@ export default function Home() {
           background: 'radial-gradient(ellipse 70% 50% at 50% 60%, rgba(127,119,221,0.10) 0%, transparent 70%)',
         }} />
 
-        {/* Glowing planet */}
+        {/* Glowing eclipse planet */}
         <div className="hero-planet" aria-hidden="true" />
+
+        {/* Spotlight coming from top */}
+        <div className="hero-spotlight" />
 
         {/* ── Center content ── */}
         <div className="relative z-10 max-w-4xl mx-auto px-6 pt-32 pb-60 text-center w-full">
@@ -201,7 +204,7 @@ export default function Home() {
             <CTAButton variant="primary" to="/contact" size="lg">
               Start Scaling
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </CTAButton>
             <CTAButton variant="secondary" to="/portfolio" size="lg">
@@ -230,7 +233,7 @@ export default function Home() {
           animate={{ opacity: 1, x: 0, y: 0 }}
           transition={{ duration: 0.8, delay: 0.9 }}
         >
-          <GlassCard className="px-5 py-4 min-w-[200px]" hover={false}>
+          <GlassCard className="px-5 py-4 min-w-[200px]" hover={false} style={{ background: '#0a0a0c', borderColor: 'rgba(162, 89, 255, 0.15)', backdropFilter: 'blur(24px)' }}>
             <div className="flex items-center gap-2 mb-1">
               <span className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.5)]" />
               <span className="font-mono text-[10px] text-white/40 tracking-wider uppercase">Revenue</span>
@@ -250,7 +253,7 @@ export default function Home() {
           animate={{ opacity: 1, x: 0, y: 0 }}
           transition={{ duration: 0.8, delay: 1.05 }}
         >
-          <GlassCard className="px-5 py-4 min-w-[190px]" hover={false}>
+          <GlassCard className="px-5 py-4 min-w-[190px]" hover={false} style={{ background: '#0a0a0c', borderColor: 'rgba(162, 89, 255, 0.15)', backdropFilter: 'blur(24px)' }}>
             <div className="flex items-center justify-between mb-1">
               <span className="font-mono text-[10px] text-white/40 tracking-wider uppercase">Automations</span>
               <span className="text-velyx-400 text-xs font-mono">42 Active</span>
@@ -297,7 +300,7 @@ export default function Home() {
                 desc: 'Replace manual work with intelligent systems that run 24/7.',
                 icon: (
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" />
                   </svg>
                 ),
               },
@@ -307,7 +310,7 @@ export default function Home() {
                 desc: 'Build your AI roadmap from day one with expert advisory.',
                 icon: (
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+                    <circle cx="12" cy="12" r="10" /><path d="M12 8v4l3 3" />
                   </svg>
                 ),
               },
@@ -317,7 +320,7 @@ export default function Home() {
                 desc: 'AI infrastructure that scales with you as you grow.',
                 icon: (
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
+                    <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" /><polyline points="16 7 22 7 22 13" />
                   </svg>
                 ),
               },
@@ -470,7 +473,7 @@ export default function Home() {
             <CTAButton variant="primary" to="/contact" size="lg">
               Book a Call
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </CTAButton>
           </ScrollReveal>

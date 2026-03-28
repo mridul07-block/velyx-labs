@@ -8,19 +8,19 @@ export default {
     extend: {
       colors: {
         velyx: {
-          500: '#7F77DD',
-          400: '#9B94E8',
-          300: '#B5B0EF',
-          600: '#6960C9',
-          dim: 'rgba(127,119,221,0.12)',
-          border: 'rgba(127,119,221,0.25)',
+          500: '#A259FF',
+          400: '#BF7BFF',
+          300: '#D9ABFF',
+          600: '#8A42EA',
+          dim: 'rgba(162, 89, 255, 0.12)',
+          border: 'rgba(162, 89, 255, 0.25)',
         },
         dark: {
-          base: '#0a0a0a',
-          deep: '#06060f',
-          elevated: '#0d0d18',
-          surface: '#111128',
-          card: '#0e0e1f',
+          base: '#050505',
+          deep: '#020202',
+          elevated: '#0a0a0a',
+          surface: '#0f0f15',
+          card: '#08080a',
         },
         text: {
           muted: '#6b6b84',

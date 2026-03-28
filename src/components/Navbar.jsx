@@ -89,11 +89,10 @@ export default function Navbar() {
             to="/contact"
             data-cursor="expand"
             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl
-              bg-velyx-500 text-white text-sm font-medium
-              border border-velyx-500
-              hover:bg-velyx-400 hover:border-velyx-400
+              bg-white text-black text-sm font-medium
+              border border-white
+              hover:bg-white/90
               transition-all duration-200
-              shadow-glow-sm hover:shadow-glow
               active:scale-[0.97]"
           >
             Book a Call
@@ -168,8 +167,8 @@ export default function Navbar() {
                 <Link
                   to="/contact"
                   className="block w-full text-center px-6 py-3 rounded-xl
-                    bg-velyx-500 text-white text-sm font-medium
-                    hover:bg-velyx-400 transition-colors"
+                    bg-white text-black text-sm font-medium
+                    hover:bg-white/90 transition-colors"
                 >
                   Book a Call
                 </Link>

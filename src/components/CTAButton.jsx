@@ -44,14 +44,14 @@ export default function CTAButton({
 
   const variants = {
     primary: `
-      bg-velyx-500 text-white border border-velyx-500
-      hover:bg-velyx-400 hover:border-velyx-400
-      shadow-glow-sm hover:shadow-glow
+      bg-white text-black border border-white
+      hover:bg-white/90
       active:scale-[0.97]
     `,
     secondary: `
-      bg-transparent text-velyx-400 border border-velyx-border
-      hover:border-velyx-500 hover:text-velyx-300 hover:bg-velyx-dim
+      bg-velyx-500 text-white border border-velyx-500
+      hover:bg-velyx-400 hover:border-velyx-400
+      shadow-glow-sm hover:shadow-glow
       active:scale-[0.97]
     `,
     ghost: `
