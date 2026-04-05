@@ -150,54 +150,6 @@ a:focus-visible {
   border-top: 2px solid #7F77DD;
 }
 
-/* ── Floating animation for hero metric cards ────────────── */
-@keyframes floatA {
-
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-14px);
-  }
-}
-
-@keyframes floatB {
-
-  0%,
-  100% {
-    transform: translateY(-8px);
-  }
-
-  50% {
-    transform: translateY(8px);
-  }
-}
-
-@keyframes floatC {
-
-  0%,
-  100% {
-    transform: translateY(-4px);
-  }
-
-  50% {
-    transform: translateY(-18px);
-  }
-}
-
-.float-a {
-  animation: floatA 5.5s ease-in-out infinite;
-}
-
-.float-b {
-  animation: floatB 7s ease-in-out infinite;
-}
-
-.float-c {
-  animation: floatC 6s ease-in-out infinite;
-}
 
 /* ── Scroll indicator bounce ─────────────────────────────── */
 @keyframes scrollBounce {
@@ -249,78 +201,94 @@ a:focus-visible {
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 1200px;
-  height: 60vh;
-  background: conic-gradient(from 180deg at 50% -20%,
-      transparent 120deg,
-      rgba(162, 89, 255, 0.15) 150deg,
-      rgba(162, 89, 255, 0.25) 180deg,
-      rgba(162, 89, 255, 0.15) 210deg,
-      transparent 240deg);
-  filter: blur(40px);
+  max-width: 1400px;
+  height: 75vh;
+  background: conic-gradient(from 180deg at 50% -10%,
+      transparent 115deg,
+      rgba(162, 89, 255, 0.12) 145deg,
+      rgba(162, 89, 255, 0.22) 180deg,
+      rgba(162, 89, 255, 0.12) 215deg,
+      transparent 245deg);
+  filter: blur(50px);
   pointer-events: none;
   z-index: 1;
 }
 
-/* ── Hero planet / eclipse sphere ────────────────────────── */
-.hero-planet {
+/* ── Spline 3D scene container ───────────────────────────── */
+.hero-spline-container {
   position: absolute;
-  left: 50%;
-  bottom: -45%;
-  transform: translateX(-50%);
-  width: 1200px;
-  height: 1200px;
-  border-radius: 50%;
-  /* Dark sphere to create silhouette */
-  background: radial-gradient(circle at 50% 10%, #050505 40%, #020202 80%);
-  /* Strong top rim light */
-  box-shadow:
-    inset 0 4px 20px rgba(162, 89, 255, 0.6),
-    inset 0 10px 40px rgba(162, 89, 255, 0.2),
-    0 -30px 100px rgba(162, 89, 255, 0.4),
-    0 -80px 200px rgba(162, 89, 255, 0.15);
-  animation: planetPulse 8s ease-in-out infinite;
+  inset: 0;
   z-index: 2;
+  pointer-events: auto;
 }
 
-.hero-planet::before {
-  content: '';
+.hero-spline-container canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ── Text legibility scrim (centered radial, above Spline) ── */
+.hero-text-scrim {
   position: absolute;
-  inset: -2px;
-  border-radius: 50%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(162, 89, 255, 0.8) 10%, transparent 40%);
-  mask: linear-gradient(180deg, white 0%, transparent 20%);
-  -webkit-mask: linear-gradient(180deg, white 0%, transparent 20%);
+  inset: 0;
+  background: radial-gradient(
+    ellipse 88% 72% at 50% 50%,
+    rgba(5, 5, 5, 0.78) 0%,
+    rgba(5, 5, 5, 0.48) 42%,
+    transparent 72%
+  );
+  pointer-events: none;
+  z-index: 9;
 }
 
-.hero-planet::after {
-  content: '';
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80%;
-  height: 80px;
-  background: radial-gradient(ellipse at center,
-      rgba(162, 89, 255, 0.9) 0%,
-      rgba(162, 89, 255, 0.4) 30%,
-      transparent 70%);
-  filter: blur(16px);
-  border-radius: 50%;
+/* ── Hero content layout (centered) ─────────────────────── */
+.hero-content-layout {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 7rem 3rem 4rem;
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  text-align: center;
+  min-height: 100vh;
 }
 
-@keyframes planetPulse {
-
-  0%,
-  100% {
-    transform: translateX(-50%) scale(1);
-    box-shadow: inset 0 4px 20px rgba(162, 89, 255, 0.6), inset 0 10px 40px rgba(162, 89, 255, 0.2), 0 -30px 100px rgba(162, 89, 255, 0.4), 0 -80px 200px rgba(162, 89, 255, 0.15);
+@media (max-width: 768px) {
+  .hero-content-layout {
+    padding: 7rem 1.5rem 4rem;
   }
+}
 
-  50% {
-    transform: translateX(-50%) scale(1.02);
-    box-shadow: inset 0 6px 25px rgba(162, 89, 255, 0.8), inset 0 15px 50px rgba(162, 89, 255, 0.3), 0 -40px 120px rgba(162, 89, 255, 0.5), 0 -100px 220px rgba(162, 89, 255, 0.2);
+@media (max-width: 640px) {
+  .hero-content-layout {
+    padding-top: 6rem;
   }
+}
+
+/* ── Hero service tag pill ───────────────────────────────── */
+.hero-service-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  border-radius: 50px;
+  border: 1px solid rgba(127, 119, 221, 0.22);
+  background: rgba(127, 119, 221, 0.07);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(181, 176, 239, 0.65);
+  transition: border-color 0.3s, color 0.3s, background 0.3s;
+}
+
+.hero-service-tag:hover {
+  border-color: rgba(127, 119, 221, 0.5);
+  color: #B5B0EF;
+  background: rgba(127, 119, 221, 0.14);
 }
 
 /* ── Hero badge pill ─────────────────────────────────────── */
@@ -350,42 +318,6 @@ a:focus-visible {
   box-shadow: 0 0 8px rgba(162, 89, 255, 0.6);
 }
 
-/* ── Floating hero dashboard cards ───────────────────────── */
-.hero-card-left {
-  position: absolute;
-  left: 4%;
-  bottom: 22%;
-  z-index: 20;
-}
-
-.hero-card-right {
-  position: absolute;
-  right: 4%;
-  bottom: 28%;
-  z-index: 20;
-}
-
-@media (max-width: 1024px) {
-
-  .hero-card-left,
-  .hero-card-right {
-    display: none;
-  }
-
-  .hero-planet {
-    width: 600px;
-    height: 600px;
-    bottom: -20%;
-  }
-}
-
-@media (max-width: 640px) {
-  .hero-planet {
-    width: 450px;
-    height: 450px;
-    bottom: -15%;
-  }
-}
 
 /* ── Star twinkle ────────────────────────────────────────── */
 @keyframes twinkle {
@@ -398,4 +330,243 @@ a:focus-visible {
   50% {
     opacity: 1;
   }
+}
+
+/* ── Flip card ───────────────────────────────────────────── */
+.flip-card {
+  perspective: 1200px;
+}
+
+.flip-card-inner {
+  transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+/* ── Horizontal accordion panel ──────────────────────────── */
+.accordion-panel {
+  transition: flex 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.3s ease;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* ── Teal text utilities ─────────────────────────────────── */
+.text-teal {
+  color: #00D4FF;
+}
+
+.text-teal-glow {
+  text-shadow: 0 0 24px rgba(0, 212, 255, 0.55);
+}
+
+.text-amber-vel {
+  color: #F59E0B;
+}
+
+/* ── Gradient text teal ──────────────────────────────────── */
+.text-gradient-teal {
+  background: linear-gradient(135deg, #00D4FF 0%, #33DFFF 60%, #66E8FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Glass teal border ───────────────────────────────────── */
+.glass-teal {
+  background: rgba(0, 212, 255, 0.05);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* ── Divider with label ──────────────────────────────────── */
+.divider-label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.divider-label::before,
+.divider-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(162, 89, 255, 0.3), transparent);
+}
+
+/* ── Multi-step form progress ────────────────────────────── */
+.step-progress {
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.step-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #A259FF, #BF7BFF);
+  border-radius: 999px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Myth vs Reality row ─────────────────────────────────── */
+.myth-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.3s ease;
+}
+
+.myth-row:hover {
+  background: rgba(162, 89, 255, 0.03);
+}
+
+/* ── Section background variants ────────────────────────── */
+.section-noise {
+  position: relative;
+}
+
+.section-noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  z-index: 0;
+}
+
+/* ── Bordered tag pill ───────────────────────────────────── */
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid rgba(162, 89, 255, 0.25);
+  background: rgba(162, 89, 255, 0.08);
+  color: #BF7BFF;
+}
+
+.tag-pill-teal {
+  border-color: rgba(0, 212, 255, 0.25);
+  background: rgba(0, 212, 255, 0.08);
+  color: #33DFFF;
+}
+
+.tag-pill-amber {
+  border-color: rgba(245, 158, 11, 0.25);
+  background: rgba(245, 158, 11, 0.08);
+  color: #FBBF24;
+}
+
+/* ── Timeline connector ──────────────────────────────────── */
+.timeline-line {
+  width: 1px;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    rgba(162, 89, 255, 0.5) 15%,
+    rgba(162, 89, 255, 0.5) 85%,
+    transparent 100%
+  );
+}
+
+/* ── Stat card accent glow ───────────────────────────────── */
+.stat-glow-purple {
+  box-shadow: 0 0 40px rgba(162, 89, 255, 0.15), 0 8px 32px rgba(0,0,0,0.4);
+}
+
+.stat-glow-teal {
+  box-shadow: 0 0 40px rgba(0, 212, 255, 0.12), 0 8px 32px rgba(0,0,0,0.4);
+}
+
+/* ── Testimonial quote ───────────────────────────────────── */
+.quote-mark {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 6rem;
+  line-height: 0.5;
+  color: rgba(162, 89, 255, 0.2);
+  font-weight: 700;
+}
+
+/* ── Value manifesto row ─────────────────────────────────── */
+.value-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  transition: background 0.4s ease, padding-left 0.3s ease;
+}
+
+.value-row:hover {
+  background: rgba(162, 89, 255, 0.03);
+  padding-left: 1.5rem;
+}
+
+/* ── Pricing value meter ─────────────────────────────────── */
+.value-meter {
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.07);
+  overflow: hidden;
+}
+
+.value-meter-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+}
+
+/* ── Animated node graph ─────────────────────────────────── */
+@keyframes nodePulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+@keyframes flowDash {
+  to { stroke-dashoffset: -20; }
+}
+
+/* ── Contact intake chips ────────────────────────────────── */
+.intake-chip {
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.intake-chip:hover {
+  border-color: rgba(162, 89, 255, 0.4);
+  color: #BF7BFF;
+  background: rgba(162, 89, 255, 0.08);
+}
+
+.intake-chip.active {
+  border-color: rgba(162, 89, 255, 0.6);
+  color: white;
+  background: rgba(162, 89, 255, 0.15);
 }

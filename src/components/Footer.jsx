@@ -44,68 +44,112 @@ const SOCIALS = [
 
 export default function Footer() {
   return (
-    <footer className="relative z-10 border-t-2 border-velyx-500">
+    <footer className="relative z-10 overflow-hidden">
+      {/* Top purple border */}
+      <div className="h-px w-full" style={{
+        background: 'linear-gradient(90deg, transparent, #A259FF 30%, #BF7BFF 50%, #A259FF 70%, transparent)'
+      }} />
+
+      {/* Watermark background text */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
+        <span
+          className="font-display font-bold tracking-tighter whitespace-nowrap"
+          style={{
+            fontSize: 'clamp(6rem, 18vw, 16rem)',
+            color: 'rgba(255,255,255,0.018)',
+            letterSpacing: '-0.03em',
+          }}
+        >
+          VELYX
+        </span>
+      </div>
+
       <div
         className="absolute inset-0"
-        style={{ background: 'linear-gradient(180deg, rgba(13,13,24,0.98) 0%, #0a0a0a 100%)' }}
+        style={{ background: 'linear-gradient(180deg, rgba(10,10,10,0.97) 0%, #0a0a0a 100%)' }}
       />
 
-      <div className="relative max-w-7xl mx-auto px-6 py-14">
-        <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-10">
+      <div className="relative max-w-7xl mx-auto px-6 pt-14 pb-8">
 
-          {/* Logo + tagline */}
-          <div className="flex flex-col items-center md:items-start gap-3">
+        {/* Top section: logo + newsletter + socials */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-12">
+
+          {/* Logo + tagline + status */}
+          <div className="flex flex-col gap-4">
             <Link to="/" data-cursor="expand">
               <img src={logo} alt="Velyx Labs" className="h-10 w-auto object-contain" />
             </Link>
             <p className="font-mono text-xs text-white/30 tracking-widest uppercase">
               AI Automation Agency
             </p>
+            {/* Live status */}
+            <div className="inline-flex items-center gap-2.5 mt-1">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-60"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <span className="font-mono text-[0.65rem] text-green-400/80 tracking-wide">
+                Taking on 2 new clients this month
+              </span>
+            </div>
           </div>
 
           {/* Nav links */}
-          <nav className="flex flex-wrap justify-center gap-x-8 gap-y-3">
-            {NAV_LINKS.map(({ label, path }) => (
-              <Link
-                key={path}
-                to={path}
-                data-cursor="expand"
-                className="text-sm text-white/45 hover:text-velyx-400 transition-colors duration-200"
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
+          <div className="flex flex-col gap-1">
+            <p className="font-mono text-[0.65rem] text-white/30 tracking-widest uppercase mb-3">Navigation</p>
+            <nav className="flex flex-col gap-2">
+              {NAV_LINKS.map(({ label, path }) => (
+                <Link
+                  key={path}
+                  to={path}
+                  data-cursor="expand"
+                  className="text-sm text-white/45 hover:text-velyx-400 transition-colors duration-200 w-fit"
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
+          </div>
 
-          {/* Socials */}
-          <div className="flex items-center gap-3">
-            {SOCIALS.map(({ label, href, icon }) => (
-              <a
-                key={label}
-                href={href}
-                aria-label={label}
-                data-cursor="expand"
-                className="w-9 h-9 rounded-xl glass flex items-center justify-center
-                  text-white/40 hover:text-velyx-400 hover:border-velyx-border
-                  transition-all duration-200"
-              >
-                {icon}
-              </a>
-            ))}
+          {/* Contact + socials */}
+          <div className="flex flex-col gap-4">
+            <p className="font-mono text-[0.65rem] text-white/30 tracking-widest uppercase">Connect</p>
+            <a
+              href="mailto:hello@velyxlabs.com"
+              className="text-sm text-white/45 hover:text-velyx-400 transition-colors duration-200"
+            >
+              hello@velyxlabs.com
+            </a>
+            <div className="flex items-center gap-3 mt-1">
+              {SOCIALS.map(({ label, href, icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  data-cursor="expand"
+                  className="w-9 h-9 rounded-xl glass flex items-center justify-center
+                    text-white/40 hover:text-velyx-400 hover:border-velyx-border
+                    transition-all duration-200"
+                >
+                  {icon}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Divider */}
-        <div className="section-divider my-8" />
+        <div className="section-divider mb-7" />
 
         {/* Bottom */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="font-mono text-xs text-white/25 tracking-wide">
-            © 2025 Velyx Labs · Built with AI
-          </p>
           <p className="font-mono text-xs text-white/20 tracking-wide">
-            hello@velyxlabs.com
+            © 2025 Velyx Labs · Built with AI · All rights reserved
           </p>
+          <div className="flex items-center gap-6">
+            <span className="font-mono text-xs text-white/15">Privacy Policy</span>
+            <span className="font-mono text-xs text-white/15">Terms of Service</span>
+          </div>
         </div>
       </div>
     </footer>

@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { useInView, motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import GlowOrb from '../components/GlowOrb'
 import GlassCard from '../components/GlassCard'
@@ -7,92 +7,7 @@ import CTAButton from '../components/CTAButton'
 import MarqueeStrip from '../components/MarqueeStrip'
 import ScrollReveal from '../components/ScrollReveal'
 import TextReveal from '../components/TextReveal'
-
-/* ─── Starfield canvas ──────────────────────────────────── */
-function Starfield() {
-  const canvasRef = useRef(null)
-  const starsRef = useRef([])
-  const rafRef = useRef(null)
-
-  const initStars = useCallback((w, h) => {
-    const stars = []
-    for (let i = 0; i < 220; i++) {
-      stars.push({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        r: Math.random() * 1.4 + 0.3,
-        baseAlpha: Math.random() * 0.6 + 0.2,
-        speed: Math.random() * 0.0015 + 0.0005,
-        offset: Math.random() * Math.PI * 2,
-      })
-    }
-    starsRef.current = stars
-  }, [])
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    let w = (canvas.width = canvas.offsetWidth * devicePixelRatio)
-    let h = (canvas.height = canvas.offsetHeight * devicePixelRatio)
-    ctx.scale(devicePixelRatio, devicePixelRatio)
-    initStars(w / devicePixelRatio, h / devicePixelRatio)
-
-    const draw = (t) => {
-      ctx.clearRect(0, 0, w, h)
-      for (const s of starsRef.current) {
-        const alpha = s.baseAlpha + Math.sin(t * s.speed + s.offset) * 0.35
-        ctx.beginPath()
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(200,195,255,${Math.max(0.05, alpha)})`
-        ctx.fill()
-      }
-      rafRef.current = requestAnimationFrame(draw)
-    }
-    rafRef.current = requestAnimationFrame(draw)
-
-    const onResize = () => {
-      w = canvas.width = canvas.offsetWidth * devicePixelRatio
-      h = canvas.height = canvas.offsetHeight * devicePixelRatio
-      ctx.scale(devicePixelRatio, devicePixelRatio)
-      initStars(w / devicePixelRatio, h / devicePixelRatio)
-    }
-    window.addEventListener('resize', onResize)
-
-    return () => {
-      cancelAnimationFrame(rafRef.current)
-      window.removeEventListener('resize', onResize)
-    }
-  }, [initStars])
-
-  return <canvas ref={canvasRef} className="hero-starfield" />
-}
-
-/* ─── Mini chart SVG for dashboard cards ────────────────── */
-function MiniChart({ color = '#7F77DD' }) {
-  return (
-    <svg viewBox="0 0 80 30" fill="none" className="w-20 h-8 mt-1">
-      <polyline
-        points="0,25 10,22 20,18 30,20 40,12 50,15 60,8 70,10 80,4"
-        stroke={color}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
-      <defs>
-        <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity="0.3" />
-          <stop offset="100%" stopColor={color} stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path
-        d="M0,25 L10,22 L20,18 L30,20 L40,12 L50,15 L60,8 L70,10 L80,4 L80,30 L0,30 Z"
-        fill="url(#chartGrad)"
-      />
-    </svg>
-  )
-}
+import AetherFlowHero from '../components/ui/aether-flow-hero'
 
 /* ─── Animated counter hook ─────────────────────────────── */
 function useCounter(target, duration = 2200) {
@@ -117,174 +32,149 @@ function useCounter(target, duration = 2200) {
   return [count, ref]
 }
 
+/* ─── Services accordion data ────────────────────────────── */
+const ACCORDION_SERVICES = [
+  {
+    num: '01',
+    title: 'AI Automation',
+    tagline: 'Replace manual work with intelligent systems.',
+    desc: 'We build end-to-end automation pipelines that eliminate repetitive tasks, accelerate workflows, and free your team to focus on what matters.',
+    stat: '47 workflows built',
+    color: 'rgba(162,89,255,0.08)',
+    borderColor: 'rgba(162,89,255,0.3)',
+    accentColor: '#BF7BFF',
+    features: ['Lead gen & CRM', 'Email sequences', 'Content pipelines', 'Reporting systems'],
+  },
+  {
+    num: '02',
+    title: 'AI Strategy',
+    tagline: 'Build your AI roadmap from day one.',
+    desc: 'We help founders understand where AI creates the most leverage in their business, then build a prioritized roadmap with clear ROI milestones.',
+    stat: '30+ roadmaps delivered',
+    color: 'rgba(0,212,255,0.06)',
+    borderColor: 'rgba(0,212,255,0.25)',
+    accentColor: '#33DFFF',
+    features: ['AI opportunity audit', 'Tool selection', 'ROI projections', 'Advisory sessions'],
+  },
+  {
+    num: '03',
+    title: 'Growth Systems',
+    tagline: 'AI infrastructure that compounds over time.',
+    desc: 'We build the revenue operations, outbound systems, and retention automation that compound over time — creating unfair advantages at every stage.',
+    stat: '$2M+ revenue generated',
+    color: 'rgba(245,158,11,0.06)',
+    borderColor: 'rgba(245,158,11,0.25)',
+    accentColor: '#FBBF24',
+    features: ['Revenue automation', 'AI outbound', 'Retention systems', 'Scale infrastructure'],
+  },
+]
+
 /* ─── Stats data ─────────────────────────────────────────── */
 const STATS = [
-  { value: 47, suffix: '+', label: 'Automations Built' },
-  { value: 2400, suffix: '', label: 'hrs Saved Monthly' },
-  { value: 30, suffix: '+', label: 'Founders Scaled' },
-  { value: 98, suffix: '%', label: 'Client Retention' },
+  { value: 47, suffix: '+', label: 'Automations Built', color: '#BF7BFF', glow: 'rgba(162,89,255,0.2)' },
+  { value: 2400, suffix: '', label: 'hrs Saved Monthly', color: '#33DFFF', glow: 'rgba(0,212,255,0.15)' },
+  { value: 30, suffix: '+', label: 'Founders Scaled', color: '#BF7BFF', glow: 'rgba(162,89,255,0.2)' },
+  { value: 98, suffix: '%', label: 'Client Retention', color: '#33DFFF', glow: 'rgba(0,212,255,0.15)' },
+]
+
+const STAT_OFFSETS = ['-mt-3', 'mt-5', '-mt-5', 'mt-2']
+
+/* ─── Traits data ────────────────────────────────────────── */
+const TRAITS = [
+  { num: '01', label: 'Speed', desc: 'Deploy in days, not months' },
+  { num: '02', label: 'Precision', desc: 'Targeting the right levers' },
+  { num: '03', label: 'Systems', desc: 'Built to run without you' },
+  { num: '04', label: 'Scale', desc: 'Grows as you grow' },
+]
+
+/* ─── Process steps ──────────────────────────────────────── */
+const STEPS = [
+  { num: '01', title: 'Audit', desc: 'We map your current ops and identify exactly where AI creates the most leverage.', time: 'Day 1' },
+  { num: '02', title: 'Strategy', desc: 'Custom roadmap built for your specific growth goals with clear ROI milestones.', time: 'Day 2–3' },
+  { num: '03', title: 'Build', desc: 'We engineer and deploy the systems end-to-end — from tools to testing to launch.', time: 'Week 1–3' },
+  { num: '04', title: 'Scale', desc: 'Ongoing optimization and expansion as your business evolves and grows.', time: 'Month 2+' },
 ]
 
 /* ─── StatItem ───────────────────────────────────────────── */
-function StatItem({ value, suffix, label }) {
+function StatItem({ value, suffix, label, color, glow, offset }) {
   const [count, ref] = useCounter(value)
   return (
-    <div ref={ref} className="text-center">
-      <div className="font-display font-bold text-4xl md:text-5xl text-white mb-1">
-        <span className="text-velyx-400">{count.toLocaleString()}</span>
-        <span className="text-velyx-500">{suffix}</span>
+    <div ref={ref} className={`${offset}`}>
+      <GlassCard
+        className="p-7 flex flex-col items-center text-center"
+        style={{ boxShadow: `0 0 40px ${glow}, 0 8px 32px rgba(0,0,0,0.45)` }}
+      >
+        <div className="font-display font-bold mb-2" style={{ fontSize: 'clamp(2.2rem, 4vw, 3rem)', color }}>
+          {count.toLocaleString()}{suffix}
+        </div>
+        <p className="font-mono text-xs text-white/40 tracking-widest uppercase">{label}</p>
+      </GlassCard>
+    </div>
+  )
+}
+
+/* ─── AI Visual for CTA section ─────────────────────────── */
+function AIVisual() {
+  return (
+    <div className="relative w-full aspect-square max-w-[340px] mx-auto">
+      {/* Outer ring */}
+      <div className="absolute inset-0 rounded-full border border-velyx-border opacity-30"
+        style={{ animation: 'pingSlow 4s ease-in-out infinite' }} />
+      {/* Middle ring */}
+      <div className="absolute inset-[15%] rounded-full border border-teal-border opacity-40"
+        style={{ animation: 'pingSlow 4s ease-in-out infinite 0.8s' }} />
+      {/* Inner ring */}
+      <div className="absolute inset-[30%] rounded-full border border-velyx-border opacity-50"
+        style={{ animation: 'pingSlow 4s ease-in-out infinite 1.6s' }} />
+      {/* Center node */}
+      <div className="absolute inset-[42%] rounded-full flex items-center justify-center"
+        style={{ background: 'radial-gradient(circle, rgba(162,89,255,0.5), rgba(162,89,255,0.1))' }}>
+        <div className="w-full h-full rounded-full"
+          style={{ background: 'rgba(162,89,255,0.8)', boxShadow: '0 0 30px rgba(162,89,255,0.6)' }} />
       </div>
-      <p className="font-mono text-xs text-white/40 tracking-widest uppercase">{label}</p>
+      {/* Orbiting nodes */}
+      {[0, 120, 240].map((deg, i) => (
+        <div key={i}
+          className="absolute inset-0 rounded-full"
+          style={{ animation: `orbit ${8 + i * 2}s linear infinite ${i % 2 === 1 ? 'reverse' : ''}` }}>
+          <div
+            className="absolute w-3 h-3 rounded-full top-[10%] left-[50%] -translate-x-1/2"
+            style={{
+              background: i % 2 === 0 ? '#BF7BFF' : '#33DFFF',
+              boxShadow: `0 0 12px ${i % 2 === 0 ? 'rgba(162,89,255,0.8)' : 'rgba(0,212,255,0.8)'}`,
+              transform: `rotate(${deg}deg) translateX(120px) rotate(-${deg}deg) translateX(-50%)`,
+            }}
+          />
+        </div>
+      ))}
+      {/* Scan line */}
+      <div className="absolute inset-[15%] rounded-full overflow-hidden opacity-20">
+        <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-teal-400 to-transparent"
+          style={{ animation: 'scan 3s ease-in-out infinite' }} />
+      </div>
+      {/* Corner labels */}
+      <div className="absolute top-[8%] right-[8%] font-mono text-[0.6rem] text-teal-400/60 tracking-widest">AI</div>
+      <div className="absolute bottom-[8%] left-[8%] font-mono text-[0.6rem] text-velyx-400/60 tracking-widest">SYS</div>
     </div>
   )
 }
 
 export default function Home() {
+  const [activeService, setActiveService] = useState(0)
+
   return (
     <div className="page-wrapper">
       {/* ══ SECTION 1 — HERO ══════════════════════════════════ */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
-        {/* Starfield background */}
-        <Starfield />
-
-        {/* Radial atmospheric glow */}
-        <div className="absolute inset-0 pointer-events-none" style={{
-          background: 'radial-gradient(ellipse 70% 50% at 50% 60%, rgba(127,119,221,0.10) 0%, transparent 70%)',
-        }} />
-
-        {/* Glowing eclipse planet */}
-        <div className="hero-planet" aria-hidden="true" />
-
-        {/* Spotlight coming from top */}
-        <div className="hero-spotlight" />
-
-        {/* ── Center content ── */}
-        <div className="relative z-10 max-w-4xl mx-auto px-6 pt-32 pb-60 text-center w-full">
-          {/* Badge pill */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="mb-7 flex justify-center"
-          >
-            <span className="hero-badge">Velyx Labs · AI Automation Agency</span>
-          </motion.div>
-
-          {/* Heading */}
-          <h1
-            className="font-display mb-6 leading-[1.05] tracking-[-0.03em]"
-            style={{ fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)', fontWeight: 700 }}
-          >
-            <span className="text-white block">
-              <TextReveal text="We Build AI Systems" delay={0.2} />
-            </span>
-            <span className="text-gradient block">
-              <TextReveal text="That Scale Founders." delay={0.35} />
-            </span>
-          </h1>
-
-          {/* Subtitle */}
-          <motion.p
-            className="text-text-sub text-lg leading-relaxed max-w-xl mx-auto mb-10"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-          >
-            From workflow automation to full AI strategy — we engineer the intelligence
-            that turns startups into category leaders.
-          </motion.p>
-
-          {/* CTA buttons */}
-          <motion.div
-            className="flex flex-wrap justify-center gap-4 mb-16"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.72 }}
-          >
-            <CTAButton variant="primary" to="/contact" size="lg">
-              Start Scaling
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </CTAButton>
-            <CTAButton variant="secondary" to="/portfolio" size="lg">
-              See Our Work
-            </CTAButton>
-          </motion.div>
-
-          {/* Scroll indicator */}
-          <motion.div
-            className="flex flex-col items-center gap-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.1 }}
-          >
-            <div className="scroll-bounce w-6 h-9 rounded-full border border-white/20 flex items-start justify-center pt-2">
-              <div className="w-1 h-1.5 rounded-full bg-velyx-400" />
-            </div>
-            <span className="font-mono text-[10px] text-white/30 tracking-[0.25em] uppercase">Scroll Down</span>
-          </motion.div>
-        </div>
-
-        {/* ── Floating dashboard cards ── */}
-        <motion.div
-          className="hero-card-left"
-          initial={{ opacity: 0, x: -40, y: 20 }}
-          animate={{ opacity: 1, x: 0, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.9 }}
-        >
-          <GlassCard className="px-5 py-4 min-w-[200px]" hover={false} style={{ background: '#0a0a0c', borderColor: 'rgba(162, 89, 255, 0.15)', backdropFilter: 'blur(24px)' }}>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.5)]" />
-              <span className="font-mono text-[10px] text-white/40 tracking-wider uppercase">Revenue</span>
-            </div>
-            <div className="font-display text-2xl font-bold text-white">$31,740</div>
-            <MiniChart color="#7F77DD" />
-            <div className="mt-1 flex items-center gap-1">
-              <span className="text-green-400 text-xs font-mono">+12.4%</span>
-              <span className="text-white/30 text-[10px] font-mono">vs last month</span>
-            </div>
-          </GlassCard>
-        </motion.div>
-
-        <motion.div
-          className="hero-card-right"
-          initial={{ opacity: 0, x: 40, y: 20 }}
-          animate={{ opacity: 1, x: 0, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.05 }}
-        >
-          <GlassCard className="px-5 py-4 min-w-[190px]" hover={false} style={{ background: '#0a0a0c', borderColor: 'rgba(162, 89, 255, 0.15)', backdropFilter: 'blur(24px)' }}>
-            <div className="flex items-center justify-between mb-1">
-              <span className="font-mono text-[10px] text-white/40 tracking-wider uppercase">Automations</span>
-              <span className="text-velyx-400 text-xs font-mono">42 Active</span>
-            </div>
-            <div className="flex items-end gap-1 mt-2">
-              {[40, 55, 35, 65, 50, 75, 60, 80, 70, 90].map((h, i) => (
-                <div
-                  key={i}
-                  className="w-2 rounded-sm"
-                  style={{
-                    height: `${h * 0.35}px`,
-                    background: `rgba(127,119,221,${0.3 + (i / 10) * 0.5})`,
-                  }}
-                />
-              ))}
-            </div>
-            <div className="mt-2 flex items-center gap-1">
-              <span className="text-velyx-300 text-xs font-mono">+8 this week</span>
-            </div>
-          </GlassCard>
-        </motion.div>
-      </section>
+      <AetherFlowHero />
 
       {/* ══ SECTION 2 — MARQUEE ══════════════════════════════ */}
       <MarqueeStrip />
 
-      {/* ══ SECTION 3 — SERVICES PREVIEW ═════════════════════ */}
+      {/* ══ SECTION 3 — SERVICES ACCORDION ══════════════════ */}
       <section className="relative py-28 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
           <ScrollReveal>
-            <div className="text-center mb-16">
+            <div className="mb-12">
               <span className="eyebrow">What We Do</span>
               <h2 className="font-display font-bold text-4xl md:text-5xl text-white mt-3 tracking-tight">
                 <TextReveal text="Our Services" />
@@ -292,52 +182,93 @@ export default function Home() {
             </div>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                num: '01',
-                title: 'AI Automation',
-                desc: 'Replace manual work with intelligent systems that run 24/7.',
-                icon: (
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" />
-                  </svg>
-                ),
-              },
-              {
-                num: '02',
-                title: 'AI Strategy',
-                desc: 'Build your AI roadmap from day one with expert advisory.',
-                icon: (
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10" /><path d="M12 8v4l3 3" />
-                  </svg>
-                ),
-              },
-              {
-                num: '03',
-                title: 'Growth Systems',
-                desc: 'AI infrastructure that scales with you as you grow.',
-                icon: (
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" /><polyline points="16 7 22 7 22 13" />
-                  </svg>
-                ),
-              },
-            ].map(({ num, title, desc, icon }, i) => (
-              <ScrollReveal key={num} delay={i * 0.1}>
+          {/* Accordion */}
+          <div className="hidden md:flex gap-3 h-[480px]">
+            {ACCORDION_SERVICES.map((svc, i) => (
+              <div
+                key={svc.num}
+                className="accordion-panel rounded-2xl relative overflow-hidden border"
+                style={{
+                  flex: activeService === i ? '2.8 1 0%' : '0.7 1 0%',
+                  background: activeService === i ? svc.color : 'rgba(255,255,255,0.02)',
+                  borderColor: activeService === i ? svc.borderColor : 'rgba(255,255,255,0.07)',
+                  boxShadow: activeService === i
+                    ? `0 0 40px ${svc.glow ?? 'rgba(162,89,255,0.15)'}, 0 8px 32px rgba(0,0,0,0.4)`
+                    : '0 4px 16px rgba(0,0,0,0.3)',
+                }}
+                onMouseEnter={() => setActiveService(i)}
+              >
+                {/* Collapsed: rotated number + title */}
+                <div
+                  className="absolute inset-0 flex flex-col items-center justify-center gap-4 transition-opacity duration-300"
+                  style={{ opacity: activeService === i ? 0 : 1, pointerEvents: activeService === i ? 'none' : 'auto' }}
+                >
+                  <span
+                    className="font-mono font-bold text-xs tracking-widest"
+                    style={{ color: svc.accentColor, writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
+                  >
+                    {svc.num}
+                  </span>
+                  <span
+                    className="font-display font-bold text-base text-white"
+                    style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
+                  >
+                    {svc.title}
+                  </span>
+                </div>
+
+                {/* Expanded content */}
+                <div
+                  className="absolute inset-0 p-8 flex flex-col justify-between transition-opacity duration-300"
+                  style={{ opacity: activeService === i ? 1 : 0, pointerEvents: activeService === i ? 'auto' : 'none' }}
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-6">
+                      <span className="font-mono text-xs tracking-widest" style={{ color: svc.accentColor }}>
+                        {svc.num}
+                      </span>
+                      <span
+                        className="font-mono text-[0.6rem] px-3 py-1 rounded-full tracking-wider"
+                        style={{ background: svc.color, border: `1px solid ${svc.borderColor}`, color: svc.accentColor }}
+                      >
+                        {svc.stat}
+                      </span>
+                    </div>
+                    <h3 className="font-display font-bold text-2xl text-white mb-2">{svc.title}</h3>
+                    <p className="font-medium mb-4 text-sm" style={{ color: svc.accentColor }}>{svc.tagline}</p>
+                    <p className="text-text-sub text-sm leading-relaxed mb-6">{svc.desc}</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {svc.features.map(f => (
+                        <div key={f} className="flex items-center gap-2 text-xs text-white/60">
+                          <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: svc.accentColor }} />
+                          {f}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <Link
+                    to="/services"
+                    className="inline-flex items-center gap-2 font-mono text-xs tracking-wider transition-colors"
+                    style={{ color: svc.accentColor }}
+                  >
+                    Explore service <span>→</span>
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Mobile fallback: regular cards */}
+          <div className="flex flex-col gap-4 md:hidden">
+            {ACCORDION_SERVICES.map((svc, i) => (
+              <ScrollReveal key={svc.num} delay={i * 0.1}>
                 <GlassCard className="p-7 border-top-violet h-full">
-                  <div className="flex items-center justify-between mb-5">
-                    <span className="font-mono text-xs text-velyx-400 tracking-widest">{num}</span>
-                    <span className="text-velyx-500">{icon}</span>
-                  </div>
-                  <h3 className="font-display font-bold text-xl text-white mb-3">{title}</h3>
-                  <p className="text-text-sub text-sm leading-relaxed">{desc}</p>
-                  <div className="mt-6">
-                    <Link to="/services" data-cursor="expand" className="font-mono text-xs text-velyx-400 hover:text-velyx-300 transition-colors tracking-wider inline-flex items-center gap-2">
-                      Learn more <span>→</span>
-                    </Link>
-                  </div>
+                  <span className="font-mono text-xs tracking-widest mb-1 block" style={{ color: svc.accentColor }}>{svc.num}</span>
+                  <h3 className="font-display font-bold text-xl text-white mb-2">{svc.title}</h3>
+                  <p className="text-text-sub text-sm leading-relaxed mb-4">{svc.desc}</p>
+                  <Link to="/services" className="font-mono text-xs inline-flex items-center gap-2" style={{ color: svc.accentColor }}>
+                    Learn more →
+                  </Link>
                 </GlassCard>
               </ScrollReveal>
             ))}
@@ -345,51 +276,57 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ SECTION 4 — VELYX DIFFERENCE (BENTO) ═════════════ */}
-      <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 grid-overlay opacity-30" />
-        <div className="max-w-7xl mx-auto px-6">
+      {/* ══ SECTION 4 — VELYX DIFFERENCE ════════════════════ */}
+      <section className="relative py-24 overflow-hidden section-noise">
+        <div className="absolute inset-0 grid-overlay opacity-20" />
+        <div className="absolute inset-0"
+          style={{ background: 'linear-gradient(135deg, rgba(162,89,255,0.04) 0%, transparent 50%, rgba(0,212,255,0.03) 100%)' }} />
+        <div className="relative z-10 max-w-7xl mx-auto px-6">
           <ScrollReveal>
-            <span className="eyebrow block text-center mb-12">The Velyx Difference</span>
+            <span className="eyebrow block mb-12">The Velyx Difference</span>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
-            {/* Large left panel */}
-            <ScrollReveal className="md:col-span-2" direction="left">
-              <GlassCard className="p-10 h-full min-h-[300px] flex flex-col justify-center" style={{
-                background: 'linear-gradient(135deg, rgba(127,119,221,0.08) 0%, rgba(13,13,24,0.9) 100%)',
-              }}>
-                <div className="mb-6">
-                  <span className="eyebrow text-velyx-400">Our Philosophy</span>
-                </div>
-                <blockquote className="font-display font-bold leading-tight tracking-tight"
-                  style={{ fontSize: 'clamp(1.4rem, 2.8vw, 2rem)' }}
-                >
-                  <span className="text-white">"The founders who win aren't</span>
-                  <br />
-                  <span className="text-white">the ones who work hardest.</span>
-                  <br />
-                  <span className="text-velyx-400">They're the ones who</span>
-                  <br />
-                  <span className="text-velyx-400">leverage AI smartest."</span>
-                </blockquote>
-              </GlassCard>
+          <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-12 lg:gap-20 items-start">
+            {/* Left: massive quote */}
+            <ScrollReveal direction="left">
+              <blockquote
+                className="font-display font-bold leading-[1.05] tracking-tight"
+                style={{ fontSize: 'clamp(2rem, 4.5vw, 3.4rem)' }}
+              >
+                <span className="text-white">"The founders who win </span>
+                <span className="text-white">aren't the ones</span>
+                <br />
+                <span className="text-white">who work hardest.</span>
+                <br />
+                <span className="text-gradient"> They're the ones</span>
+                <br />
+                <span className="text-gradient">who leverage AI</span>
+                <br />
+                <span className="text-gradient">smartest."</span>
+              </blockquote>
+              <div className="mt-8 flex items-center gap-3">
+                <div className="w-8 h-px bg-velyx-500 opacity-60" />
+                <span className="font-mono text-xs text-white/30 tracking-widest">VELYX LABS PHILOSOPHY</span>
+              </div>
             </ScrollReveal>
 
-            {/* Right bento grid */}
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { label: 'Speed', icon: '⚡', desc: 'Deploy in days, not months' },
-                { label: 'Precision', icon: '🎯', desc: 'Targeting the right levers' },
-                { label: 'Systems', icon: '⚙️', desc: 'Built to run without you' },
-                { label: 'Scale', icon: '📈', desc: 'Grows as you grow' },
-              ].map(({ label, icon, desc }, i) => (
-                <ScrollReveal key={label} delay={i * 0.08}>
-                  <GlassCard className="p-5 h-full flex flex-col gap-2">
-                    <span className="text-2xl">{icon}</span>
-                    <span className="font-display font-bold text-white text-sm">{label}</span>
-                    <span className="font-body text-xs text-text-muted leading-snug">{desc}</span>
-                  </GlassCard>
+            {/* Right: numbered traits manifesto */}
+            <div className="flex flex-col">
+              {TRAITS.map(({ num, label, desc }, i) => (
+                <ScrollReveal key={num} delay={i * 0.1}>
+                  <div className="value-row py-6 flex items-baseline gap-5 cursor-default">
+                    <span className="font-mono text-xs text-velyx-400/70 flex-shrink-0">{num}</span>
+                    <div className="flex-1">
+                      <span
+                        className="font-display font-bold text-white block mb-1"
+                        style={{ fontSize: 'clamp(1.1rem, 2vw, 1.5rem)' }}
+                      >
+                        {label}
+                      </span>
+                      <span className="text-text-muted text-sm">{desc}</span>
+                    </div>
+                    <span className="text-velyx-400/30 text-xs ml-2">→</span>
+                  </div>
                 </ScrollReveal>
               ))}
             </div>
@@ -397,11 +334,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ SECTION 5 — PROCESS STEPS ════════════════════════ */}
-      <section className="relative py-24">
-        <div className="max-w-7xl mx-auto px-6">
+      {/* ══ SECTION 5 — PROCESS TIMELINE ════════════════════ */}
+      <section className="relative py-28 overflow-hidden">
+        <div className="max-w-4xl mx-auto px-6">
           <ScrollReveal>
-            <div className="text-center mb-16">
+            <div className="text-center mb-20">
               <span className="eyebrow">How We Work</span>
               <h2 className="font-display font-bold text-4xl text-white mt-3 tracking-tight">
                 <TextReveal text="Our Process" />
@@ -409,24 +346,58 @@ export default function Home() {
             </div>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-0 relative">
-            {/* Connector line */}
-            <div className="hidden md:block absolute top-8 left-[12.5%] right-[12.5%] h-px"
-              style={{ background: 'linear-gradient(90deg, transparent, rgba(127,119,221,0.4), rgba(127,119,221,0.4), transparent)' }} />
+          {/* Vertical alternating timeline */}
+          <div className="relative">
+            {/* Vertical line */}
+            <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 timeline-line hidden md:block" />
 
-            {[
-              { num: '01', title: 'Audit', desc: 'We map your current ops and identify AI opportunities' },
-              { num: '02', title: 'Strategy', desc: 'Custom roadmap built for your specific growth goals' },
-              { num: '03', title: 'Build', desc: 'We engineer and deploy the systems end-to-end' },
-              { num: '04', title: 'Scale', desc: 'Ongoing optimization as your business grows' },
-            ].map(({ num, title, desc }, i) => (
-              <ScrollReveal key={num} delay={i * 0.12} className="relative">
-                <div className="flex flex-col items-center text-center px-4 pt-4">
-                  <div className="w-16 h-16 rounded-2xl glass flex items-center justify-center mb-5 relative z-10">
-                    <span className="font-mono font-bold text-velyx-400 text-lg">{num}</span>
+            {STEPS.map(({ num, title, desc, time }, i) => (
+              <ScrollReveal key={num} delay={i * 0.14} direction={i % 2 === 0 ? 'left' : 'right'}>
+                <div className={`flex items-center gap-0 mb-16 md:mb-12 ${i % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}>
+                  {/* Content card */}
+                  <div className={`flex-1 ${i % 2 !== 0 ? 'md:pl-10' : 'md:pr-10'}`}>
+                    <GlassCard className="p-7 relative overflow-hidden">
+                      {/* Giant background number */}
+                      <span
+                        className="absolute font-display font-bold text-white select-none pointer-events-none"
+                        style={{
+                          fontSize: '7rem',
+                          opacity: 0.025,
+                          bottom: '-1rem',
+                          right: '0.5rem',
+                          lineHeight: 1,
+                        }}
+                      >
+                        {num}
+                      </span>
+                      <div className="relative z-10">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="font-mono text-xs text-velyx-400 tracking-widest">{num}</span>
+                          <span
+                            className="font-mono text-[0.6rem] px-2.5 py-1 rounded-full"
+                            style={{ background: 'rgba(0,212,255,0.08)', border: '1px solid rgba(0,212,255,0.2)', color: '#33DFFF' }}
+                          >
+                            {time}
+                          </span>
+                        </div>
+                        <h3 className="font-display font-bold text-xl text-white mb-2">{title}</h3>
+                        <p className="text-text-sub text-sm leading-relaxed">{desc}</p>
+                      </div>
+                    </GlassCard>
                   </div>
-                  <h3 className="font-display font-bold text-lg text-white mb-2">{title}</h3>
-                  <p className="text-text-sub text-sm leading-relaxed">{desc}</p>
+
+                  {/* Center circle node */}
+                  <div className="hidden md:flex flex-shrink-0 w-16 h-16 rounded-full z-10 items-center justify-center"
+                    style={{
+                      background: 'rgba(162,89,255,0.12)',
+                      border: '2px solid rgba(162,89,255,0.35)',
+                      boxShadow: '0 0 20px rgba(162,89,255,0.2)',
+                    }}>
+                    <span className="font-mono font-bold text-velyx-400 text-sm">{num}</span>
+                  </div>
+
+                  {/* Empty opposing side */}
+                  <div className="flex-1 hidden md:block" />
                 </div>
               </ScrollReveal>
             ))}
@@ -435,48 +406,93 @@ export default function Home() {
       </section>
 
       {/* ══ SECTION 6 — STATS ROW ════════════════════════════ */}
-      <section className="relative py-16 overflow-hidden">
+      <section className="relative py-20 overflow-hidden">
+        {/* Horizon glow beam */}
         <div className="absolute inset-0"
-          style={{ background: 'linear-gradient(90deg, #0d0d18 0%, #0f0f22 50%, #0d0d18 100%)' }} />
-        <div className="absolute inset-0 section-divider" style={{ height: '1px', top: 0 }} />
-        <div className="absolute inset-0 section-divider" style={{ height: '1px', bottom: 0, top: 'auto' }} />
+          style={{ background: 'linear-gradient(90deg, #0a0a0a 0%, #0f0f1a 50%, #0a0a0a 100%)' }} />
+        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-40 pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse 80% 100% at 50% 50%, rgba(162,89,255,0.07) 0%, transparent 70%)' }} />
+        <div className="section-divider absolute top-0 inset-x-0" />
+        <div className="section-divider absolute bottom-0 inset-x-0" />
 
         <div className="relative max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
-            {STATS.map(({ value, suffix, label }, i) => (
-              <ScrollReveal key={label} delay={i * 0.1}>
-                <StatItem value={value} suffix={suffix} label={label} />
+          <div className="hidden md:flex items-end justify-center gap-5">
+            {STATS.map(({ value, suffix, label, color, glow }, i) => (
+              <ScrollReveal key={label} delay={i * 0.1} className={`flex-1 max-w-[220px] ${STAT_OFFSETS[i]}`}>
+                <StatItem value={value} suffix={suffix} label={label} color={color} glow={glow} offset="" />
+              </ScrollReveal>
+            ))}
+          </div>
+          {/* Mobile grid */}
+          <div className="grid grid-cols-2 gap-4 md:hidden">
+            {STATS.map(({ value, suffix, label, color, glow }) => (
+              <ScrollReveal key={label}>
+                <StatItem value={value} suffix={suffix} label={label} color={color} glow={glow} offset="" />
               </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ══ SECTION 7 — CTA ══════════════════════════════════ */}
-      <section className="relative py-36 overflow-hidden flex items-center">
-        <div className="absolute inset-0 grid-overlay opacity-20" />
+      {/* ══ SECTION 7 — CTA (ASYMMETRIC SPLIT) ══════════════ */}
+      <section className="relative py-36 overflow-hidden">
+        <div className="absolute inset-0 grid-overlay opacity-15" />
+        <GlowOrb size={600} className="right-[-100px] top-1/2" style={{ transform: 'translateY(-50%)' }} />
 
-        {/* Small orb */}
-        <GlowOrb size={500} className="left-1/2 top-1/2" style={{ transform: 'translate(-50%, -50%)' }} />
+        <div className="relative z-10 max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-12 lg:gap-20 items-center">
 
-        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center w-full">
-          <ScrollReveal>
-            <span className="eyebrow">Ready?</span>
-            <h2 className="font-display font-bold mt-4 mb-6 text-white tracking-tight"
-              style={{ fontSize: 'clamp(2.2rem, 5vw, 3.8rem)' }}>
-              <TextReveal text="Ready to scale with AI?" />
-            </h2>
-            <p className="text-text-sub text-lg max-w-lg mx-auto mb-10 leading-relaxed">
-              Let's build the AI systems that turn your startup into a category leader.
-              Book a free 30-minute strategy call.
-            </p>
-            <CTAButton variant="primary" to="/contact" size="lg">
-              Book a Call
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </CTAButton>
-          </ScrollReveal>
+            {/* Left: headline + dual CTAs + social proof */}
+            <ScrollReveal direction="left">
+              <span className="eyebrow mb-4 block">Ready?</span>
+              <h2 className="font-display font-bold tracking-tight leading-none mb-6"
+                style={{ fontSize: 'clamp(2.8rem, 6.5vw, 5.5rem)' }}>
+                <span className="text-white block">Ready to scale</span>
+                <span className="text-stroke block">with AI?</span>
+              </h2>
+              <p className="text-text-sub text-lg max-w-md mb-10 leading-relaxed">
+                Let's build the AI systems that turn your startup into a category leader.
+                Book a free 30-minute strategy call.
+              </p>
+              <div className="flex flex-wrap gap-4 mb-10">
+                <CTAButton variant="primary" to="/contact" size="lg">
+                  Book a Call
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </CTAButton>
+                <CTAButton variant="secondary" to="/services" size="lg">
+                  See Pricing
+                </CTAButton>
+              </div>
+              {/* Social proof row */}
+              <div className="flex items-center gap-4">
+                <div className="flex -space-x-2.5">
+                  {['AR', 'SC', 'PP', 'JM'].map((init, i) => (
+                    <div key={i}
+                      className="w-9 h-9 rounded-full border-2 border-dark-base flex items-center justify-center font-display font-bold text-xs"
+                      style={{
+                        background: i % 2 === 0 ? 'linear-gradient(135deg,#A259FF,#7F77DD)' : 'linear-gradient(135deg,#00D4FF,#0088AA)',
+                        color: 'white',
+                        zIndex: 4 - i,
+                      }}
+                    >
+                      {init}
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <p className="text-white text-sm font-semibold">Trusted by 30+ founders</p>
+                  <p className="text-text-muted text-xs">2,400+ hrs saved monthly</p>
+                </div>
+              </div>
+            </ScrollReveal>
+
+            {/* Right: AI visual */}
+            <ScrollReveal direction="right">
+              <AIVisual />
+            </ScrollReveal>
+          </div>
         </div>
       </section>
     </div>
