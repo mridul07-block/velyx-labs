@@ -570,3 +570,81 @@ a:focus-visible {
   color: white;
   background: rgba(162, 89, 255, 0.15);
 }
+
+/* ── Bento grid layout ──────────────────────────────────── */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.bento-cell--wide {
+  grid-column: span 2;
+}
+
+.bento-cell--tall {
+  grid-row: span 2;
+}
+
+@media (max-width: 768px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bento-cell--wide,
+  .bento-cell--tall {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+}
+
+.bento-inner {
+  position: relative;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 2rem;
+  height: 100%;
+  overflow: hidden;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.3s ease;
+}
+
+.bento-inner:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4), 0 0 30px rgba(162, 89, 255, 0.08);
+}
+
+.bento-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.6;
+  transition: opacity 0.4s ease;
+}
+
+.bento-inner:hover .bento-glow {
+  opacity: 1;
+}
+
+/* ── Testimonial cells ──────────────────────────────────── */
+.testimonial-cell {
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.testimonial-cell:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Tech stack items ───────────────────────────────────── */
+.tech-stack-item {
+  transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+/* ── FAQ items ──────────────────────────────────────────── */
+.faq-item {
+  transition: background 0.35s ease, border-color 0.35s ease;
+}
+
+.faq-item:hover {
+  background: rgba(162, 89, 255, 0.03) !important;
+}

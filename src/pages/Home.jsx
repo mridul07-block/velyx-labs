@@ -159,6 +159,72 @@ function AIVisual() {
   )
 }
 
+/* ─── FAQ items ──────────────────────────────────────────── */
+const FAQ_ITEMS = [
+  { q: 'How fast can you start?', a: "Most projects kick off within 48 hours of signing. We run a focused discovery call, then move straight into building — no weeks of alignment meetings." },
+  { q: 'Do we need an AI team in-house?', a: "Not at all. That\u0027s exactly why we exist. We become your plug-in AI team — strategy, engineering, and deployment — so you can stay focused on running the business." },
+  { q: "What if we're not sure where AI fits?", a: "Perfect — that\u0027s our most popular starting point. We run a full AI Opportunity Audit, mapping your ops to identify the 2-3 highest-leverage areas. No guesswork." },
+  { q: 'How do you measure ROI?', a: 'Every engagement starts with clear, quantifiable KPIs — hours saved, revenue lifted, cost reduced. We track and report monthly so you always know the impact.' },
+  { q: 'Is this just chatbots and GPT wrappers?', a: 'Far from it. We build production-grade automation systems, revenue pipelines, and custom AI integrations. Think end-to-end infrastructure, not novelty demos.' },
+  { q: 'What does pricing look like?', a: 'We offer project-based and retainer models. Most engagements range from $2K-$10K/mo depending on scope. Every proposal includes a clear ROI forecast.' },
+]
+
+function FAQAccordion() {
+  const [open, setOpen] = useState(null)
+  return (
+    <div className="flex flex-col gap-3">
+      {FAQ_ITEMS.map((item, i) => (
+        <ScrollReveal key={i} delay={i * 0.06}>
+          <div
+            className="faq-item rounded-2xl overflow-hidden"
+            style={{
+              background: open === i ? 'rgba(162,89,255,0.04)' : 'rgba(255,255,255,0.02)',
+              border: `1px solid ${open === i ? 'rgba(162,89,255,0.2)' : 'rgba(255,255,255,0.06)'}`,
+              transition: 'all 0.35s ease',
+            }}
+          >
+            <button
+              className="w-full flex items-center justify-between p-6 text-left group"
+              onClick={() => setOpen(open === i ? null : i)}
+            >
+              <span className="flex items-center gap-4">
+                <span className="font-mono text-xs text-velyx-400/60 tracking-widest flex-shrink-0">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span className="font-display font-bold text-white text-base md:text-lg group-hover:text-velyx-300 transition-colors">
+                  {item.q}
+                </span>
+              </span>
+              <motion.span
+                className="text-velyx-400 flex-shrink-0 ml-4"
+                animate={{ rotate: open === i ? 45 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
+              </motion.span>
+            </button>
+            <AnimatePresence>
+              {open === i && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-6 pb-6 pl-[3.75rem]">
+                    <p className="text-text-sub text-sm leading-relaxed">{item.a}</p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </ScrollReveal>
+      ))}
+    </div>
+  )
+}
+
 export default function Home() {
   const [activeService, setActiveService] = useState(0)
 
@@ -434,7 +500,264 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ SECTION 7 — CTA (ASYMMETRIC SPLIT) ══════════════ */}
+      {/* ══ SECTION 7 — BENTO CAPABILITIES GRID ══════════════ */}
+      <section className="relative py-28 overflow-hidden">
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, #0a0a0a 0%, #0d0d18 50%, #0a0a0a 100%)' }} />
+        <div className="absolute inset-0 grid-overlay opacity-10" />
+        <div className="relative z-10 max-w-7xl mx-auto px-6">
+          <ScrollReveal>
+            <div className="text-center mb-16">
+              <span className="eyebrow">Capabilities</span>
+              <h2 className="font-display font-bold text-4xl md:text-5xl text-white mt-3 tracking-tight">
+                <TextReveal text="What We Build For Founders" />
+              </h2>
+              <p className="text-text-sub text-lg mt-4 max-w-2xl mx-auto">
+                End-to-end AI systems engineered to eliminate bottlenecks and compound your growth.
+              </p>
+            </div>
+          </ScrollReveal>
+
+          {/* Bento Grid */}
+          <div className="bento-grid">
+            {/* Large feature — spans 2 cols */}
+            <ScrollReveal delay={0.05} className="bento-cell bento-cell--wide">
+              <div className="bento-inner" style={{ background: 'rgba(162,89,255,0.04)', borderColor: 'rgba(162,89,255,0.15)' }}>
+                <div className="bento-glow" style={{ background: 'radial-gradient(circle at 20% 30%, rgba(162,89,255,0.12), transparent 60%)' }} />
+                <div className="relative z-10 flex flex-col h-full justify-between">
+                  <div>
+                    <div className="flex items-center gap-3 mb-5">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(162,89,255,0.15)', border: '1px solid rgba(162,89,255,0.3)' }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#BF7BFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                      </div>
+                      <span className="tag-pill">Core Engine</span>
+                    </div>
+                    <h3 className="font-display font-bold text-2xl text-white mb-3">Workflow Automation</h3>
+                    <p className="text-text-sub text-sm leading-relaxed max-w-md">
+                      We map your entire operation, identify every manual bottleneck, and replace them with intelligent automation pipelines that run 24/7 — from lead capture to fulfillment.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-6 mt-8">
+                    {['Lead Gen', 'CRM Sync', 'Email Flows', 'Reporting'].map(t => (
+                      <span key={t} className="font-mono text-[0.6rem] text-velyx-400/70 tracking-widest uppercase">{t}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </ScrollReveal>
+
+            {/* Tall cell */}
+            <ScrollReveal delay={0.1} className="bento-cell bento-cell--tall">
+              <div className="bento-inner" style={{ background: 'rgba(0,212,255,0.03)', borderColor: 'rgba(0,212,255,0.12)' }}>
+                <div className="bento-glow" style={{ background: 'radial-gradient(circle at 70% 20%, rgba(0,212,255,0.1), transparent 60%)' }} />
+                <div className="relative z-10 flex flex-col h-full justify-between">
+                  <div>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-5" style={{ background: 'rgba(0,212,255,0.12)', border: '1px solid rgba(0,212,255,0.25)' }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#33DFFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+                    </div>
+                    <h3 className="font-display font-bold text-xl text-white mb-3">AI Strategy & Roadmapping</h3>
+                    <p className="text-text-sub text-sm leading-relaxed">
+                      We audit your business, identify the highest-ROI AI opportunities, and deliver a phased roadmap with clear milestones — so you know exactly where to invest.
+                    </p>
+                  </div>
+                  {/* Mini metric */}
+                  <div className="mt-6 pt-5" style={{ borderTop: '1px solid rgba(0,212,255,0.1)' }}>
+                    <span className="font-display font-bold text-3xl" style={{ color: '#33DFFF' }}>30+</span>
+                    <span className="font-mono text-xs text-white/30 tracking-wider ml-2">roadmaps delivered</span>
+                  </div>
+                </div>
+              </div>
+            </ScrollReveal>
+
+            {/* Standard cell */}
+            <ScrollReveal delay={0.15} className="bento-cell">
+              <div className="bento-inner" style={{ background: 'rgba(245,158,11,0.03)', borderColor: 'rgba(245,158,11,0.12)' }}>
+                <div className="bento-glow" style={{ background: 'radial-gradient(circle at 80% 80%, rgba(245,158,11,0.08), transparent 60%)' }} />
+                <div className="relative z-10">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-5" style={{ background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.25)' }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                  </div>
+                  <h3 className="font-display font-bold text-xl text-white mb-3">Revenue Systems</h3>
+                  <p className="text-text-sub text-sm leading-relaxed">
+                    AI-powered outbound, retention loops, and revenue ops that compound — creating unfair growth advantages at every stage.
+                  </p>
+                </div>
+              </div>
+            </ScrollReveal>
+
+            {/* Standard cell */}
+            <ScrollReveal delay={0.2} className="bento-cell">
+              <div className="bento-inner" style={{ background: 'rgba(162,89,255,0.03)', borderColor: 'rgba(162,89,255,0.1)' }}>
+                <div className="bento-glow" style={{ background: 'radial-gradient(circle at 30% 70%, rgba(162,89,255,0.08), transparent 60%)' }} />
+                <div className="relative z-10">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-5" style={{ background: 'rgba(162,89,255,0.12)', border: '1px solid rgba(162,89,255,0.25)' }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#BF7BFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                  </div>
+                  <h3 className="font-display font-bold text-xl text-white mb-3">Web & Product Dev</h3>
+                  <p className="text-text-sub text-sm leading-relaxed">
+                    High-performance websites and AI-powered products built for conversion — not just aesthetics.
+                  </p>
+                </div>
+              </div>
+            </ScrollReveal>
+
+            {/* Wide bottom cell */}
+            <ScrollReveal delay={0.25} className="bento-cell bento-cell--wide">
+              <div className="bento-inner" style={{ background: 'rgba(0,212,255,0.02)', borderColor: 'rgba(0,212,255,0.1)' }}>
+                <div className="bento-glow" style={{ background: 'radial-gradient(circle at 80% 40%, rgba(0,212,255,0.08), transparent 60%)' }} />
+                <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'rgba(0,212,255,0.12)', border: '1px solid rgba(0,212,255,0.25)' }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#33DFFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/><path d="M7.5 4.21l4.5 2.6 4.5-2.6M7.5 19.79V14.6L3 12M21 12l-4.5 2.6v5.19M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>
+                      </div>
+                      <span className="tag-pill-teal">Full Stack</span>
+                    </div>
+                    <h3 className="font-display font-bold text-2xl text-white mb-3">AI Integration & Custom Models</h3>
+                    <p className="text-text-sub text-sm leading-relaxed max-w-lg">
+                      From GPT fine-tuning to custom embeddings — we integrate AI deeply into your existing tools, building proprietary intelligence that becomes your moat.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {['OpenAI', 'LangChain', 'Pinecone', 'Make.com', 'n8n', 'Custom APIs'].map(t => (
+                      <span key={t} className="hero-service-tag">{t}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ══ SECTION 8 — TESTIMONIALS ══════════════════════════ */}
+      <section className="relative py-28 overflow-hidden section-noise">
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(162,89,255,0.03) 0%, transparent 50%, rgba(0,212,255,0.02) 100%)' }} />
+        <div className="section-divider absolute top-0 inset-x-0" />
+        <div className="relative z-10 max-w-7xl mx-auto px-6">
+          <ScrollReveal>
+            <div className="text-center mb-16">
+              <span className="eyebrow">Social Proof</span>
+              <h2 className="font-display font-bold text-4xl md:text-5xl text-white mt-3 tracking-tight">
+                <TextReveal text="Founders Who Scaled With Us" />
+              </h2>
+            </div>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { quote: "Velyx didn't just automate our workflows — they re-architected how we think about growth. We saved 40+ hours per week within the first month.", name: 'Arjun R.', role: 'CEO, ScaleUp Studio', accent: '#BF7BFF', bg: 'rgba(162,89,255,0.04)', border: 'rgba(162,89,255,0.15)' },
+              { quote: "Their AI strategy roadmap was the single best investment we made. Clear, actionable, and the ROI was visible within 3 weeks of implementation.", name: 'Sarah C.', role: 'Founder, NexGen Health', accent: '#33DFFF', bg: 'rgba(0,212,255,0.04)', border: 'rgba(0,212,255,0.15)' },
+              { quote: "We went from manually qualifying leads to a fully automated pipeline that books calls while we sleep. Revenue doubled in 90 days.", name: 'Priya P.', role: 'COO, CloudBridge', accent: '#FBBF24', bg: 'rgba(245,158,11,0.04)', border: 'rgba(245,158,11,0.15)' },
+            ].map((t, i) => (
+              <ScrollReveal key={i} delay={i * 0.12}>
+                <div
+                  className="testimonial-cell relative overflow-hidden rounded-2xl p-8 h-full"
+                  style={{ background: t.bg, border: `1px solid ${t.border}` }}
+                >
+                  {/* Quote mark */}
+                  <span className="absolute top-4 right-6 font-display font-bold text-[5rem] leading-none select-none pointer-events-none" style={{ color: t.accent, opacity: 0.06 }}>"</span>
+                  <div className="relative z-10 flex flex-col h-full">
+                    {/* Stars */}
+                    <div className="flex gap-1 mb-5">
+                      {[...Array(5)].map((_, s) => (
+                        <svg key={s} width="14" height="14" viewBox="0 0 24 24" fill={t.accent} stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                      ))}
+                    </div>
+                    <p className="text-white/80 text-sm leading-relaxed flex-1 mb-6">"{t.quote}"</p>
+                    <div className="flex items-center gap-3 mt-auto">
+                      <div
+                        className="w-10 h-10 rounded-full flex items-center justify-center font-display font-bold text-xs text-white"
+                        style={{ background: `linear-gradient(135deg, ${t.accent}, ${t.accent}88)` }}
+                      >
+                        {t.name.split(' ').map(n => n[0]).join('')}
+                      </div>
+                      <div>
+                        <p className="text-white text-sm font-semibold">{t.name}</p>
+                        <p className="text-text-muted text-xs">{t.role}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ SECTION 9 — TECH STACK / INTEGRATIONS ════════════ */}
+      <section className="relative py-28 overflow-hidden">
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% 50%, rgba(127,119,221,0.04) 0%, transparent 70%)' }} />
+        <div className="relative z-10 max-w-7xl mx-auto px-6">
+          <ScrollReveal>
+            <div className="text-center mb-16">
+              <span className="eyebrow">Tech Stack</span>
+              <h2 className="font-display font-bold text-4xl md:text-5xl text-white mt-3 tracking-tight">
+                <TextReveal text="Tools We Master" />
+              </h2>
+              <p className="text-text-sub text-lg mt-4 max-w-xl mx-auto">
+                We don't just use tools — we orchestrate entire ecosystems that work together seamlessly.
+              </p>
+            </div>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {[
+              { name: 'OpenAI', icon: '⚡', color: '#BF7BFF', desc: 'LLM & Embeddings' },
+              { name: 'Make.com', icon: '⚙️', color: '#33DFFF', desc: 'Automation' },
+              { name: 'n8n', icon: '🔗', color: '#FBBF24', desc: 'Workflow Engine' },
+              { name: 'LangChain', icon: '🦜', color: '#BF7BFF', desc: 'AI Orchestration' },
+              { name: 'Pinecone', icon: '🌲', color: '#33DFFF', desc: 'Vector DB' },
+              { name: 'Vercel', icon: '▲', color: '#ffffff', desc: 'Deployment' },
+              { name: 'Supabase', icon: '⚡', color: '#3ECF8E', desc: 'Backend' },
+              { name: 'Stripe', icon: '💳', color: '#BF7BFF', desc: 'Payments' },
+              { name: 'Figma', icon: '🎨', color: '#33DFFF', desc: 'Design' },
+              { name: 'React', icon: '⚛️', color: '#61DAFB', desc: 'Frontend' },
+              { name: 'Node.js', icon: '🟢', color: '#68A063', desc: 'Backend' },
+              { name: 'Python', icon: '🐍', color: '#FBBF24', desc: 'AI / ML' },
+            ].map((tool, i) => (
+              <ScrollReveal key={tool.name} delay={i * 0.04}>
+                <motion.div
+                  className="tech-stack-item group relative rounded-2xl p-5 text-center overflow-hidden"
+                  style={{
+                    background: 'rgba(255,255,255,0.02)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                  }}
+                  whileHover={{
+                    borderColor: `${tool.color}44`,
+                    background: `${tool.color}08`,
+                    y: -4,
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <span className="text-2xl block mb-3">{tool.icon}</span>
+                  <p className="font-display font-bold text-white text-sm mb-1">{tool.name}</p>
+                  <p className="font-mono text-[0.6rem] text-text-muted tracking-wider uppercase">{tool.desc}</p>
+                </motion.div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ SECTION 10 — FAQ ACCORDION ════════════════════════ */}
+      <section className="relative py-28 overflow-hidden section-noise">
+        <div className="section-divider absolute top-0 inset-x-0" />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(162,89,255,0.02) 0%, transparent 50%)' }} />
+        <div className="relative z-10 max-w-3xl mx-auto px-6">
+          <ScrollReveal>
+            <div className="text-center mb-16">
+              <span className="eyebrow">FAQ</span>
+              <h2 className="font-display font-bold text-4xl md:text-5xl text-white mt-3 tracking-tight">
+                <TextReveal text="Questions Founders Ask" />
+              </h2>
+            </div>
+          </ScrollReveal>
+
+          <FAQAccordion />
+        </div>
+      </section>
+
+      {/* ══ SECTION 11 — CTA (ASYMMETRIC SPLIT) ══════════════ */}
       <section className="relative py-36 overflow-hidden">
         <div className="absolute inset-0 grid-overlay opacity-15" />
         <GlowOrb size={600} className="right-[-100px] top-1/2" style={{ transform: 'translateY(-50%)' }} />
